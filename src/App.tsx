@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 function App() {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [formData, setFormData] = useState();
+  const [error, setError] = useState<null | string>(null);
 
-  const tesseractImage = async (body) => {
+  const tesseractImage = async (body: any) => {
     try {
       setError(null);
       setLoading(true);
@@ -20,16 +19,16 @@ function App() {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      setError(error.message);
+      setError((error as unknown as {message: string}).message);
     }
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const form = new FormData();
 
-    form.append("image", event.target.fileUpload.files[0]);
+    form.append("image", (event.target as unknown as {fileUpload: {files: any[]}}).fileUpload.files[0]);
     await tesseractImage(form);
   }
 
